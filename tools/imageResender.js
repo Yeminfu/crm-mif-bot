@@ -1,36 +1,56 @@
+import getTokenByUser from './getTokenByUser.js';
+
 const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
 
+const essenses = {
+  заказ: "lead",
+};
+
 export default async function imageResender(msg, bot) {
+  const [essenseRus, essenseId] = msg.caption.split(" ");
+  const essense = essenses[essenseRus.toLowerCase()];
+  if (!essense || !essenseId) {
+    bot.sendMessage(
+      5050441344,
+      JSON.stringify({
+        что_случилось: "фуфел тулят",
+        msg
+      }, null, 2)
+    )
+    return;
+  }
+
   const chatId = msg.chat.id;
 
-  if (msg.photo) {
-    const photo = msg.photo[msg.photo.length - 1];
-    const fileId = photo.file_id;
-    bot.getFile(fileId).then((fileInfo) => {
-      const fileUrl = `https://api.telegram.org/file/bot${telegramToken}/${fileInfo.file_path}`;
-      saveImage(fileUrl, 'saved_image.jpg').then(() => {
-        bot.sendMessage(chatId, 'Изображение сохранено');
-      }).catch((error) => {
-        bot.sendMessage(chatId, `Произошла ошибка при сохранении изображения: ${error}`);
-      });
+  const token = await getTokenByUser(chatId);
+  if (!token) return;
+
+  const photo = msg.photo[msg.photo.length - 1];
+  const fileId = photo.file_id;
+  bot.getFile(fileId).then((fileInfo) => {
+    const fileUrl = `https://api.telegram.org/file/bot${telegramToken}/${fileInfo.file_path}`;
+    sendMessage(fileUrl, 'saved_image.jpg', token, essense, essenseId).then(() => {
+      bot.sendMessage(chatId, 'Изображение сохранено');
     }).catch((error) => {
-      bot.sendMessage(chatId, `Произошла ошибка при получении информации о файле: ${error}`);
+      bot.sendMessage(chatId, `Произошла ошибка при сохранении изображения: ${error}`);
     });
-  }
+  }).catch((error) => {
+    bot.sendMessage(chatId, `Произошла ошибка при получении информации о файле: ${error}`);
+  });
 }
 
-function saveImage(url, fileName) {
+function sendMessage(url, fileName, token, essense, essenseId) {
   return new Promise(async (resolve, reject) => {
 
     const formData = new FormData();
 
     formData.append('text', 'здравствуйте');
-    formData.append('essense', 'lead');
-    formData.append('essense_id', '1');
+    formData.append('essense', essense);
+    formData.append('essense_id', essenseId);
 
     const blob = await fetch(url).then((response) => response.blob())
 
-    const file = new File([blob], 'fileName.jpeg', { type: blob.type });
+    const file = new File([blob], fileName, { type: blob.type });
 
     formData.append('images', file);
 
@@ -38,7 +58,7 @@ function saveImage(url, fileName) {
       method: 'POST',
       body: formData,
       headers: {
-        Cookie: `auth=1x4Wz1Rum0YsxxEtT7rR`
+        Cookie: `auth=${token}`
       },
     }).then(x => {
       console.log('x.ok', x.ok);
