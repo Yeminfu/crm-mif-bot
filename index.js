@@ -4,6 +4,7 @@ import { setChatIdToUser } from './tools/setChatIdToUser.js';
 import getTokenByUser from './tools/getTokenByUser.js';
 import checkUserInBase from './tools/checkUserInBase.js';
 import fs from "fs";
+import imageResender from './tools/imageResender.js';
 
 
 
@@ -29,13 +30,14 @@ bot.on('message', async (msg) => {
     const inDb = await checkUserInBase(username); if (inDb) { const { username: usernameFromDB, id: idFromDB, tg_chat_id, ...isInBase } = inDb; if (!tg_chat_id) { bot.sendMessage(chatId, `Приветствую, ${usernameFromDB}`); const updated = await setChatIdToUser(idFromTGChat, idFromDB); if (updated) bot.sendMessage(chatId, 'Регистрация прошла успешно');; } else { bot.sendMessage(chatId, 'Уже знакомы'); } } else { bot.sendMessage(chatId, 'Вы кто такие? Я вас не знаю.'); }
   }
   // console.log('msg', msg);
-
+  
   if (!(msg.photo && msg.caption)) {
-    console.log('нихуя не пришло', msg.photo, msg.caption);
+    console.log('нихуя не пришло');
   }
   
   if (msg.photo && msg.caption) {
-    console.log('пришла картинка с подписью', msg.photo, msg.caption);
+    imageResender(msg,bot);
+    // console.log('пришла картинка с подписью', msg.photo, msg.caption);
   }
 
 });
