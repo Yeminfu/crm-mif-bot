@@ -46,7 +46,7 @@ function sendMessage(url, fileName, token, essense, essenseId) {
 
     const formData = new FormData();
 
-    formData.append('text', 'Отправлено через тг бот');
+    formData.append('text', 'Отправлено через через телеграм бот');
     formData.append('essense', essense);
     formData.append('essense_id', essenseId);
 
