@@ -1,4 +1,6 @@
 import getTokenByUser from './getTokenByUser.js';
+import 'dotenv/config';
+
 
 const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
 
