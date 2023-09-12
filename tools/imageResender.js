@@ -16,7 +16,7 @@ export default async function imageResender(msg, bot) {
     bot.sendMessage(
       5050441344,
       JSON.stringify({
-        что_случилось: "фуфел тулят",
+        что_случилось: "фуфел тулят #vd6",
         msg
       }, null, 2)
     )
