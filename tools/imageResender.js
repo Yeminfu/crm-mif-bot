@@ -12,11 +12,11 @@ const essenses = {
 export default async function imageResender(msg, bot) {
 
 
+  const [firstRow, ...otherRows] = msg.caption.split("\n");
 
-  const [essenseRus, essenseId] = msg.caption.split(" ");
+  const [essenseRus, essenseId] = firstRow.split(" ");
 
 
-  const [firstRow, ...otherRows] = msg.caption.split("\n")
   const description = (otherRows?.length) ? otherRows.join("\n") : "";
 
   const essense = essenses[essenseRus.toLowerCase()];
