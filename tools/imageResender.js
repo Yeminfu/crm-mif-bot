@@ -10,7 +10,15 @@ const essenses = {
 };
 
 export default async function imageResender(msg, bot) {
+
+
+
   const [essenseRus, essenseId] = msg.caption.split(" ");
+
+
+  const [firstRow, ...otherRows] = msg.caption.split("\n")
+  const description = (otherRows?.length) ? otherRows.join("\n") : "";
+
   const essense = essenses[essenseRus.toLowerCase()];
   if (!essense || !essenseId) {
     bot.sendMessage(
@@ -32,7 +40,7 @@ export default async function imageResender(msg, bot) {
   const fileId = photo.file_id;
   bot.getFile(fileId).then((fileInfo) => {
     const fileUrl = `https://api.telegram.org/file/bot${telegramToken}/${fileInfo.file_path}`;
-    sendMessage(fileUrl, 'saved_image.jpg', token, essense, essenseId).then(() => {
+    sendMessage(fileUrl, 'saved_image.jpg', token, essense, essenseId, description).then(() => {
       bot.sendMessage(chatId, 'Изображение сохранено');
     }).catch((error) => {
       bot.sendMessage(chatId, `Произошла ошибка при сохранении изображения: ${error}`);
@@ -42,12 +50,12 @@ export default async function imageResender(msg, bot) {
   });
 }
 
-function sendMessage(url, fileName, token, essense, essenseId) {
+function sendMessage(url, fileName, token, essense, essenseId, description) {
   return new Promise(async (resolve, reject) => {
 
     const formData = new FormData();
 
-    formData.append('text', 'Отправлено через через телеграм бот');
+    formData.append('text', 'Отправлено через через телеграм бот\n' + description);
     formData.append('essense', essense);
     formData.append('essense_id', essenseId);
 
