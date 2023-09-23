@@ -1,4 +1,5 @@
 import { pool } from "../db/connect.js";
+console.log('pool', pool);
 export default async function checkUserInBase(username) {
     console.log('username $ks', username);
     return await new Promise(r => {
