@@ -1,4 +1,4 @@
-import { pool } from "../db/connect";
+import { pool } from "../db/connect.js";
 
 export async function setChatIdToUser(idFromTGChat, idFromDB) {
     return await new Promise(r => {
