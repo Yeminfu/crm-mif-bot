@@ -9,9 +9,7 @@ console.log(token);
 
 (async () => {
 
-  sendMessage(5050441344, "manamana", String(token))
 
-  return;
   const connection = await mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -21,8 +19,10 @@ console.log(token);
 
   try {
     // Выполнение запроса
-    const [rows, fields] = await connection.execute('SELECT * FROM your_table');
+    const [rows, fields] = await connection.execute('show tables');
+    // sendMessage(5050441344, "manamana", String(token))
 
+    // return;
     // Вывод результатовq
     console.log(rows);
   } catch (error) {
