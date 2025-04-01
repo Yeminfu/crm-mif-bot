@@ -1,15 +1,15 @@
 import mysql from 'mysql2/promise';
 import 'dotenv/config';
+import sendMessage from './src/telegramApi/sendMessage/sendMessage';
 
 console.log('hello');
 const token = process.env.TOKEN;
 console.log(token);
 
-const url = `https://api.telegram.org/bot${token}/sendMessage`;
 
 (async () => {
 
-  sendMessage(5050441344, "чсч")
+  sendMessage(5050441344, "manamana", String(token))
 
   return;
   const connection = await mysql.createConnection({
@@ -37,27 +37,3 @@ const url = `https://api.telegram.org/bot${token}/sendMessage`;
 
 
 
-async function sendMessage(chatId: number, message: string) {
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: message
-      })
-    });
-
-    // Проверка ответа
-    if (!response.ok) {
-      throw new Error(`Ошибка: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log('Сообщение отправлено:', data);
-  } catch (error) {
-    console.error('Ошибка при отправке сообщения:', error);
-  }
-}
